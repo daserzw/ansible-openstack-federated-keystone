@@ -1,0 +1,1 @@
+# ansible-openstack-federated-keystone
