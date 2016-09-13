@@ -1,0 +1,6 @@
+---
+
+- hosts: keystoneservers
+  roles:
+    - keystone
+    

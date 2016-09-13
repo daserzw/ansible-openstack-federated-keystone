@@ -1,0 +1,33 @@
+---
+
+- name: Setup federated auth in keystone vhost
+  template:
+    src: keystone-vhost.conf.j2
+    dest: {{ keystone.vhost }}
+  backup: yes
+
+- name: Configure federated auth in keystone - auth section
+  ini_file:
+    dest: {{ keystone.conf }}
+    section: auth
+    option: methods
+    value: external,password,token,oauth1,saml2
+    backup: yes
+
+- name: Configure federated auth in keystone - federation section opt1
+  ini_file:
+    dest: {{ keystone.conf }}
+    section: federation
+    option: remote_id_attribute
+    value: Shib-Identity_provider
+    backup: yes
+
+- name: Configure federated auth in keystone - federation section opt2
+  ini_file:
+    dest: {{ keystone.conf }}
+    section: federation
+    option: trusted_dashboard
+    value: "{{ horizon.url }}/auth/websso"
+    backup: yes
+
+- 

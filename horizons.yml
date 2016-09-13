@@ -1,0 +1,6 @@
+---
+
+- hosts: horizonservers
+  roles:
+    - dashboard
+    
