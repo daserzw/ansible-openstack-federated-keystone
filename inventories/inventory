@@ -1,8 +1,5 @@
 [kesystoneservers]
-keystone1
+keystone.na2.garrservices.it
 
 [horizonservers]
-horizon1
-
-[spservers]
-sp1
+horizon.na2.garrservices.it

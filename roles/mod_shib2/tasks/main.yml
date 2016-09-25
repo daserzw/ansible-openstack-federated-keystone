@@ -1,0 +1,38 @@
+- name: Update apt cache
+  apt: update_cache=yes
+
+- name: Install Shibboleth Service Provider
+  apt: name=libapache2-mod-shib2 state=present
+
+- name: Create Shibboleth SP keys
+  shell: /usr/sbin/shib-keygen -h sp.example.org -e https://sp.example.org/shibboleth 
+  args:
+    creates: /etc/shibboleth/sp-key.pem
+
+- name: Create metadata directory for IdP metadata
+  file: name=/etc/shibboleth/metadata state=directory
+
+- name: Configure Shibboleth SP
+  template:
+    src: shibboleth2.xml.j2
+    dest: /etc/shibboleth/shibboleth2.xml
+    
+- name: Configure Shibboleth SP Attribute Map
+  copy:
+    src: attribute-map.xml
+    dest: /etc/shibboleth/attribute-map.xml
+
+- name: Configure Shibboleth SP Attribute Policy
+  template:
+    src: attribute-policy.xml.j2
+    dest: /etc/shibboleth/attribute-policy.xml
+
+- name: Add IdP Metadata File to Shibboleth SP (conditional)
+  copy:
+    src: {{ shibsp.idp_metadata_file }}
+    dest: /etc/shibboleth/metadata/idp-metadata.xml
+    validate_certs: no
+  when: shibsp.idp_metadata_file
+  
+- name: Restart shibd
+  service: name=shibd state=restarted enabled=yes

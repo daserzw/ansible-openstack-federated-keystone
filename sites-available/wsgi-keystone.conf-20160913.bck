@@ -3,7 +3,6 @@ Listen 5000
 Listen 35357
 
 <VirtualHost *:5000>
-
     WSGIDaemonProcess keystone-public processes=5 threads=1 user=keystone group=keystone display-name=%{GROUP}
     WSGIProcessGroup keystone-public
     WSGIScriptAlias / /usr/bin/keystone-wsgi-public
@@ -13,16 +12,12 @@ Listen 35357
     ErrorLog /var/log/apache2/keystone.log
     CustomLog /var/log/apache2/keystone_access.log combined
 
-    WSGIScriptAlias ^(/v3/OS-FEDERATION/identity_providers/.*?/protocols/.*?/auth)$ /usr/bin/keystone-wsgi-public/$1
-    
     <Directory /usr/bin>
         Require all granted
     </Directory>
-
 </VirtualHost>
 
 <VirtualHost *:35357>
-
     WSGIDaemonProcess keystone-admin processes=5 threads=1 user=keystone group=keystone display-name=%{GROUP}
     WSGIProcessGroup keystone-admin
     WSGIScriptAlias / /usr/bin/keystone-wsgi-admin
@@ -36,27 +31,3 @@ Listen 35357
         Require all granted
     </Directory>
 </VirtualHost>
-
-<Location /Shibboleth.sso>
-    SetHandler shib
-</Location>
-
-<Location /v3/OS-FEDERATION/identity_providers/{{ shibsp.application_id }}/protocols/saml2/auth>
-    AuthType shibboleth
-    ShibRequestSetting requireSession 1
-    ShibRequestSetting applicationId {{ shibsp.application_id }}
-    ShibExportAssertion Off
-    Require valid-user
-</Location>
-
-<Location ~ "/v3/auth/OS-FEDERATION/websso/saml2">
-    AuthType shibboleth
-    ShibRequestSetting requireSession 1
-    Require valid-user
-</Location>
-
-<Location ~ "/v3/auth/OS-FEDERATION/identity_providers/{{ shibsp.application_id }}/protocols/saml2/websso">
-    AuthType shibboleth
-    ShibRequestSetting requireSession 1
-    Require valid-user
-</Location>

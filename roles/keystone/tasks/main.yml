@@ -14,12 +14,12 @@
     value: external,password,token,oauth1,saml2
     backup: yes
 
-- name: Configure federated auth in keystone - federation section opt1
+- name: Configure federated auth in keystone - saml2 section
   ini_file:
     dest: {{ keystone.conf }}
-    section: federation
+    section: saml2
     option: remote_id_attribute
-    value: Shib-Identity_provider
+    value: 'Shib-Identity_provider'
     backup: yes
 
 - name: Configure federated auth in keystone - federation section opt2
@@ -27,7 +27,6 @@
     dest: {{ keystone.conf }}
     section: federation
     option: trusted_dashboard
-    value: "{{ horizon.url }}/auth/websso"
+    value: "{{ keystone.trusted_dashboard }}"
     backup: yes
 
-- 

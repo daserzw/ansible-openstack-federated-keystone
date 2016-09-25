@@ -2,5 +2,6 @@
 
 - hosts: horizonservers
   roles:
+    - horizon-vhost
     - dashboard
     
