@@ -1,0 +1,24 @@
+{ "mapping":
+  { "rules": 
+    [
+	{ "local": [
+	    {
+		"user": {
+		    "domain": {
+			"name": "limbo"
+		    }, 
+		    "type": "local", 
+		    "name": "{0}"
+		}
+            }
+	], 
+	  "remote": [
+              {
+		  "type": "eppn"
+              }
+	  ]
+	}
+    ]
+  }
+}
+

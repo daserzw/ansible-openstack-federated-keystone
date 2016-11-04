@@ -1,0 +1,2 @@
+horizon:
+  default_auth: saml2

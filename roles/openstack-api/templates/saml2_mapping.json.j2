@@ -1,0 +1,26 @@
+{ "mapping":
+  { "rules": 
+    [
+	{ "local": [
+	    {
+		"user": {
+		    "domain": {
+			"name": "{{ keystone.federated_user_domain }}"
+		    }, 
+		    "type": "local", 
+		    "name": "{0}",
+		    "email": "{1}"
+		}
+            }
+	], 
+	  "remote": [
+              {
+		  "type": "eppn",
+		  "type": "email"
+              }
+	  ]
+	}
+    ]
+  }
+}
+

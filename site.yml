@@ -1,0 +1,4 @@
+---
+- include: keystones.yml
+- include: horizons.yml
+- include: openstackapi.yml

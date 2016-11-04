@@ -1,0 +1,64 @@
+- name: Update apt cache
+  apt: update_cache=yes
+
+- name: Install Shibboleth Service Provider
+  apt: name=libapache2-mod-shib2 state=present
+
+- name: Copy the Shibboleth SP cert
+  copy:
+    src: sp-cert.pem
+    dest: /etc/shibboleth/
+    owner: _shibd
+    group: _shibd
+
+- name: Copy the Shibboleth SP key
+  copy:
+    src: sp-key.pem
+    dest: /etc/shibboleth/
+    owner: _shibd
+    group: _shibd
+
+#- name: Create Shibboleth SP keys
+#  shell: /usr/sbin/shib-keygen -h sp.example.org -e https://sp.example.org/shibboleth 
+#  args:
+#    creates: /etc/shibboleth/sp-key.pem
+
+- name: Create metadata directory for IdP metadata
+  file: name=/etc/shibboleth/metadata state=directory
+
+- name: Configure Shibboleth SP
+  template:
+    src: shibboleth2.xml.j2
+    dest: /etc/shibboleth/shibboleth2.xml
+    
+- name: Configure Shibboleth SP Attribute Map
+  copy:
+    src: attribute-map.xml
+    dest: /etc/shibboleth/attribute-map.xml
+
+- name: Configure Shibboleth SP Attribute Policy
+  template:
+    src: attribute-policy.xml.j2
+    dest: /etc/shibboleth/attribute-policy.xml
+
+- name: Add IdP Metadata File to Shibboleth SP (conditional)
+  copy:
+    src: "{{ shibsp.idp_metadata_file }}"
+    dest: /etc/shibboleth/metadata/idp-metadata.xml
+  when: shibsp.idp_metadata_file
+
+- name: Stat Federation Metadata Certificate Signer (conditional)
+  stat: 
+    path: "/etc/shibboleth/metadata/{{ shibsp.fed_metadata_signer_file }}"
+  register: shibsp_fed_metadata_signer_file
+  when: shibsp.fed_metadata_uri
+
+- name: Download Federation Metadata Certificate Signer (conditional)
+  get_url: 
+    url:"{{ shibsp.fed_metadata_signer_url }}" 
+    dest:"/etc/shibboleth/metadata/{{ shibsp.fed_metadata_signer_file }}"
+  when: shib_fed_metadata_signer_file.exists == False and fed_metadata_uri is defined
+
+- name: Restart shibd
+  service: name=shibd state=restarted enabled=yes
+  notify: restart apache

@@ -1,0 +1,5 @@
+---
+
+- hosts: openstackapis
+  roles:
+    - openstack-api

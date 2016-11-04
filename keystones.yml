@@ -2,5 +2,5 @@
 
 - hosts: keystoneservers
   roles:
+    - mod_shib2
     - keystone
-    

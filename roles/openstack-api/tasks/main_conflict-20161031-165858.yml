@@ -1,0 +1,83 @@
+---
+
+#- name: Is the Identity Provider already setted up?
+#  uri: 
+#    url: "http://localhost:4990/v3/OS-FEDERATION/identity_providers/{{ keystone.idp_id }}"
+#    headers:
+#      X-Auth-Token: "{{ keystone.admin_token }}"
+#    method: GET
+#    return_content: yes
+#  register: idp_settedup
+#  failed_when: false
+    
+#- name: Set the Openstack Identity Provider
+#  uri: 
+#    url: "http://localhost:4990/v3/OS-FEDERATION/identity_providers/{{ keystone.idp_id }}"
+#    headers: 
+#      X-Auth-Token: "{{ keystone.admin_token }}"
+#      Content-type: "application/json"
+#    method: PUT
+#    status_code: 201
+#    return_content: yes
+#    body_format: json
+#    body: '
+#      {
+#        "identity_provider": {
+#	  "description": "IdP",
+#	  "remote_ids": [ "{{ shibsp.idp_entity_id }}" ],
+#	  "enabled": true
+#	 }
+#       }'
+#  when: idp_settedup.status != 200
+
+#- name: Is the SAML2 protocol for the IdP already setted up?
+#  uri: 
+#    url: "http://localhost:4990/v3/OS-FEDERATION/identity_providers/{{ keystone.idp_id }}"
+#    headers:
+#      X-Auth-Token: "{{ keystone.admin_token }}"
+#    method: GET
+#    return_content: yes
+#  register: idp_saml2
+#  failed_when: false
+  
+#- name: Set the SAML2 protocol for the IdP
+#  uri: 
+#    url: "http://localhost:4990/v3/OS-FEDERATION/identity_providers/{{ keystone.idp_id }}/protocols/saml2"
+#    headers: 
+#      X-Auth-Token: "{{ keystone.admin_token }}"
+#      Content-type: application/json
+#    method: PUT
+#    body_format: json
+#    body: '
+#      { 
+#        "protocol":
+#          { 
+#            "mapping_id": "saml2_mapping"
+#          }
+#      }'
+#    status_code: 201
+#    return_content: yes
+#  when: idp_saml2.status != 200
+
+- name: Is the mapping for the SAML2 protocol already setted up?
+  uri: 
+    url: "http://localhost:4990/v3/OS-FEDERATION/mappings/{{ keystone.saml2_mapping }}"
+    headers:
+      X-Auth-Token: "{{ os_admin_token }}"
+    method: GET
+    return_content: yes
+  register: saml2_mapping
+  failed_when: false  
+    
+- name: Create the mapping for the SAML2 protocol
+  uri:
+    url: "http://localhost:4990/v3/OS-FEDERATION/mappings/{{ keystone.saml2_mapping }}"
+    headers:
+      X-Auth-Token: "{{ os_admin_token }}"
+      Content-type: application/json
+    method: PUT
+    body_format: json
+    body: "{{ lookup('template', 'templates/saml2_mapping.json.j2') }}"
+    status_code: 201
+    return_content: yes
+  when: saml2_mapping.status != 200

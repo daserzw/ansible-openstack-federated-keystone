@@ -1,0 +1,36 @@
+---
+- name: Set V3 OPENSTACK_HOST (public hostname)
+  lineinfile: 
+    dest: /etc/openstack-dashboard/local_settings.py
+    regexp: ^OPENSTACK_HOST
+    line: OPENSTACK_HOST = "{{ keystone_host_vip }}"
+    backup: yes
+  notify: restart apache
+
+- name: Set V3 OPENSTACK_KEYSTONE_URL
+  lineinfile: 
+    dest: /etc/openstack-dashboard/local_settings.py
+    regexp: ^OPENSTACK_KEYSTONE_URL
+    line: OPENSTACK_KEYSTONE_URL = "http://%s:5000/v3" % OPENSTACK_HOST
+    backup: yes
+  notify: restart apache
+
+- name: Set WEBSSO_ENABLED
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    regexp: "^#WEBSSO_ENABLED"
+    line: WEBSSO_ENABLED = True
+    backup: yes
+  notify: restart apache
+
+- name: Configure WEBSSO_CHOICES
+  blockinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    insertafter: ^WEBSSO_ENABLED
+    block: |
+      WEBSSO_CHOICES =(
+          ("credentials", _("Keystone Credentials")),
+          ("saml2", _("Security Assertion Markup Language")),
+      )
+    backup: yes
+  notify: restart apache

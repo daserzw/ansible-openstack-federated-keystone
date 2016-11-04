@@ -1,0 +1,32 @@
+shibsp:
+  entity_id: "https://{{keystone_host_vip}}/shibboleth"
+  idp_entity_id: 
+  # Choose idp_metadata_file or idp_metadata_url whether you have the 
+  # file locally or you want the SP to donwload from an URL
+  idp_metadata_file: 
+  idp_metadata_url: 
+  # If your IdP is an IdpProxy, either you add the appropriate IdPs scope
+  # to the proxy or you do not check the scope of eduPersonPrincipalName 
+  # on the SP, in the latter case set check_eppn_scope to 0
+  check_eppn_scope: 1
+  application_id: "{{ keystone.idp_id }}"
+  fed_metadata_uri: 
+  fed_metadata_bck_file: 
+  fed_metadata_signer_url: 
+  fed_metadata_signer_file: 
+  support_contact: 
+  redirect_errors: "https://{{ horizon_host_vip }}/about.html"
+  # Set discovery to 1 if you want to configure a discovery service
+  discovery:
+  discovery_url: 
+keystone:
+  conf_path: /etc/keystone/keystone.conf	
+  vhost_path: /etc/apache2/sites-enabled/wsgi-keystone.conf
+  trusted_dashboard: https://{{ horizon_host_vip }}/auth/websso/
+  public_endpoint_port: 4990
+  admin_endpoint_port: 35347
+  admin_token: 
+  auth_url: "https://{{ keystone_host_vip }}:5000/v3"
+  idp_id: 
+  saml2_mapping: idp_mapping
+  federated_user_domain: 
