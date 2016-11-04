@@ -18,11 +18,6 @@
     owner: _shibd
     group: _shibd
 
-#- name: Create Shibboleth SP keys
-#  shell: /usr/sbin/shib-keygen -h sp.example.org -e https://sp.example.org/shibboleth 
-#  args:
-#    creates: /etc/shibboleth/sp-key.pem
-
 - name: Create metadata directory for IdP metadata
   file: name=/etc/shibboleth/metadata state=directory
 

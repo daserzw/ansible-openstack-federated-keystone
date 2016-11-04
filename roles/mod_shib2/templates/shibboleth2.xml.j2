@@ -43,11 +43,10 @@
             (Set discoveryProtocol to "WAYF" for legacy Shibboleth WAYF support.)
             You can also override entityID on /Login query string, or in RequestMap/htaccess.
             -->
-	    {% if shibsp.discovery_url %}
-	    <SSO discoveryProtocolo="SAMLDS" ECP="true"
-		 discoveryURL="{{ shibsp.discovery_url }}">
-	    {% else %}
-	    <SSO entityID="{{ shibsp.idp_entity_id }}">
+            <SSO entityID="{{ shibsp.entity_id }}">
+	      {% if shibsp.discovery_url %}
+	      discoveryProtocol="SAMLDS"
+	      discoveryURL="{{ shibsp.discovery_url }}"
 	      {% endif %}
               SAML2
             </SSO>
@@ -132,7 +131,8 @@
         <!--
         <ApplicationOverride id="admin" entityID="https://admin.example.org/shibboleth"/>
         -->
-	<ApplicationOverride id="{{ shibsp.application_id }}" entityID="{{ shibsp.entity_id }}" />
+	<ApplicationOverride id="{{ shibsp.application_id }}" entityID="{{ shibsp.entity_id }}"
+			     REMOTE_USER="eppn persistent-id targeted-id" />
 	  
       </ApplicationDefaults>
     
